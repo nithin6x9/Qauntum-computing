@@ -1,4 +1,4 @@
-#!/home/nithin_nk/git/quantum_project/quantum/bin/python3
+#!/home/nithin_nk/git/quantum_project/quantum/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
