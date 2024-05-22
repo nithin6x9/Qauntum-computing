@@ -1,4 +1,6 @@
-from qiskit import QuantumCircuit, Aer, execute, transpile
+#1
+from qiskit import QuantumCircuit, execute, transpile
+from qiskit_aer import Aer
 from qiskit_aer import AerSimulator
 
 from qiskit.circuit import Instruction, Circuit, Qubit, QuantumRegister
@@ -18,7 +20,7 @@ import sympy
 from functools import *
 from traceback import format_exc
 
-
+#2
 def group(list,subListLen):
     if subListLen != 0:
         grouped_list = []
@@ -57,6 +59,53 @@ def dstatial(the_function,the_list):
 
     return the_new_list
 
+#3
+
+data = [0,1]
+
+nbits = 2
+lendata,digits = len(data),nbits*2
+
+numsList = []
+ProductCBinFinals = []
+'''Create Raw Table list of lists to converted to pandas 
+    So that it can be printed ad tables
+    
+    '''
+RawTable = []
+
+for i in range(lendata**digits):
+    nums = [data[(i//lendata**d)%lendata]for d in range(digits)[::-1]]
+    numsGrouped = group(nums,nbits)
+
+    nums0 = numsGrouped[0]
+    nums1 = numsGrouped[1]
+
+    '''Product using classical computation 
+    (Conver nums0 and nums1, binary  number representation,to decimel number A and B)'''
+    A,B = np.sum(2**np.arange(digits//2)[::-1]*nums0),np.sum(2**np.arrange(digits//2)[::-1]*nums1)
+    ProductClassical = A * B
+
+    #Convert the Classical product to its binary
+
+    ProductBin = list(afmtsd(bin(ProductClassical)[2:],'0',digits))
+
+    #Finalize the Productbin
+
+    ProductCBinFinal = dstatial(int,ProductBin)
+
+    numsList += [nums]
+    ProductCBinFinals += [ProductCBinFinal]
+
+    RawTable.append([i,A,B,nums0,nums1,ProductClassical,nums,ProductCBinFinal])
+
+    pd.set_option('display.max_colwodyh',None)
+
+    #create panfas datafram based on RawTable
+
+    Table = Table.style_properties(**{'text-align':'center'})
+
+    Table
 
 
 
