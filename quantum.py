@@ -114,7 +114,7 @@ ProductCBinColNum = ProductCBinFinalsArr.shape[1]
 termsCompr1 = []
 prodinSOPLen = []
 
-qubit = digits*2+ProductCBinColNum
+qubitNums = digits*2+ProductCBinColNum
 
 RawTable = []
 
@@ -172,5 +172,42 @@ for i in range(ProductCBinColNum):
 
             RawTable.append([termsCompr1Cont])
 
+    pd.set_option('display.max_colwidth',None)
+
+    Table = pd.DataFrame(RawTable,columns = ['Inner Logical Qubits'])
+
+    TableStyle1 = Table.style.set_properties(**{'text-align':'left'})
+
+    Table.loc['Count'] = Table[['Inner Logical Qubits']].count()
+
+    qubitNumsInitial = qubitNums 
+    qubitNums += len(termsCompr2)
+
+    print('Number of qubits:',qubitNums)
+
+    '''Table
+        Number of qubits:20'''
+    
+    #6
+    termsCompr3 = []
+    for termsCompr2Index in range(len(termsCompr2)):
+        targetQubit = (termsCompr2Index+qubitNumsInitial,)
+
+        QubitMCXGCommand = ()
+
+        for controlQubit in termsCompr2[termsCompr2Index]:
+            controlQubitProfile = controlQubit.split('q')
+
+            if controlQubitProfile[0]:
+                controlQubitProfile = int(controlQubitProfile[1])+digits*2
+
+            else:
+                controlQubitProfile = int(controlQubitProfile[1])
+
+            QubitMCXGCommand += (controlQubitProfile,)
+        termsCompr3.append(QubitMCXGCommand+targetQubit)
+
+        print(termsCompr3)
+    #7
 
 
