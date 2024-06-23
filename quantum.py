@@ -2,7 +2,7 @@ from qiskit import QuantumCircuit, execute, transpile
 from qiskit_aer import Aer
 from qiskit_aer import AerSimulator
 
-from qiskit.circuit import Instruction, Circuit, Qubit, QuantumRegister
+from qiskit.circuit import Instruction, CircuitInstruction, Qubit, QuantumRegister
 from qiskit.circuit.library.standard_gates import CXGate, CCXGate, C3XGate, C4XGate, MCXGate
 
 import matplotlib.pyplot as plt
@@ -131,7 +131,7 @@ for i in range(ProductCBinColNum):
     ProductRawEq1 = []
     symbols = [sympy.Symbol('q%s' % QubitIndex)for QubitIndex in range(inputNums)]
 
-    for ProductArr1InputsCont in ProductArr1Inputs:
+    for ProductArr1InputsCount in ProductArr1Inputs:
         ProductRawEq1 += [[{symbols[inputIndex]:ProductArr1InputsCount[InputIndex] for InputIndex in range(len(ProductArr1InputsCont))}]]
 
         ProductRawEq2 = np.array(ProductRawEq1)
@@ -313,6 +313,26 @@ for i in range(ProductCBinColNum):
 
     mCirc.append(MCXGate(num_ctrl_qubits=1),(19,7))
     mCirc.x(7)
+
+    #13
+    mCirc.measure(np.arange(digits)+digits,range(digits)[::-1])
+
+    #14
+    inputDet = sum([circInst.operation.name == 'x' or circInst.operation.name=='id' for circInst in
+                    mCirc.data[:digits]])==digits
+    if inputDet < digits:
+        initGates = []
+        qreg = mCirc.data[0].qubits[0].register
+
+    for inputIndex in range(digits):
+        initGates.append(CircuitInstruction(operation=Instruction(name='id',num_qubits=1,num_clbits=0,params=[]),
+                    qubits =(Qubit(qreg,inputIndex),),
+                    cIbits=()))
+
+    mCirc.data = initGates + mCirc.data
+
+    mCirc.draw(output='mpl')
+
 
 
 
