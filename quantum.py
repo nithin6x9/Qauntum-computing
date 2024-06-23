@@ -210,4 +210,109 @@ for i in range(ProductCBinColNum):
         print(termsCompr3)
     #7
 
+    def print_exec(command,sep='',end='\n'):
+        print(command,sep=sep,end=end)
+        exec(command)
+    #8
+
+    mCirc = QuantumCircuit(qubitNums,digits)
+
+    for InputNum in range(digits):
+        inverseInputNum = InputNum+digits*2
+        print_exec(f'mCirc.cv({InputNum},{inverseInputNum})')
+        print_exec(f'mCirc.x({inverseInputNum})')
+
+    mCirc.cx(0,8)
+    mCirc.cx(8)
+    mCirc.cx(1,9)
+    mCirc.cx(9)
+    mCirc.cx(2,10)
+    mCirc.cx(10)
+    mCirc.cx(3,11)
+    mCirc.cx(11)
+    
+    #9
+
+    operationSOP1 = []
+    operationSOP1Checkpoint = 0
+
+    for operationSOP1Index in prodinSOPLen:
+        slicedTerms = termsCompr3[operationSOP1Checkpoint:operationSOP1Checkpoint+operationSOP1Index]
+        
+        operationSOP1.append(slicedTerms)
+        operationSOP1Checkpoint += operationSOP1Index
+
+        print(prodinSOPLen,end = '\n\n\n')
+        print(operationSOP1,end='\n\n\n')
+        #[1,2,4,1]
+
+    #10
+
+    for operationSOP1Count in operationSOP1:
+        for SOPProduct in operationSOP1Count:
+            print_exec(f'mCirc.append(MCXGate(num_ctrl_qubits = {len(SOPProduct)-1}),{SOPProduct})')
+            print_exec(f'mCirc.x({SOPProduct[-1]})',end='\n\n')
+
+        print()
+
+    mCirc.append(MCXGate(num_ctrl_qubits=4),(0,1,2,3))
+    mCirc.x(12)
+
+
+    mCirc.append(MCXGate(num_ctrl_qubits=3),(0,2,11,13))
+    mCirc.x(13)
+
+    mCirc.append(MCXGate(num_ctrl_qubits=3),(0,2,9,14))
+    mCirc.x(14)
+
+    mCirc.append(MCXGate(num_ctrl_qubits=3),(1,2,11,15))
+    mCirc.x(15)
+
+    mCirc.append(MCXGate(num_ctrl_qubits=3),(1,2,8,16))
+    mCirc.x(16)
+
+    mCirc.append(MCXGate(num_ctrl_qubits=3),(0,3,9,17))
+    mCirc.x(17)
+
+    mCirc.append(MCXGate(num_ctrl_qubits=3),(0,3,10,18))
+    mCirc.x(18)
+
+    mCirc.append(MCXGate(num_ctrl_qubits=2),(1,2,19))
+    mCirc.x(19)
+
+    #11
+
+    operationSOP2 = []
+
+    for operationSOP1Index in range(len(operationSOP1)):
+        operationSOP1Cont = operationSOP1[operationSOP1Index]
+
+        opSOP1ControlQubits = tuple(operationSOP1aCont[-1]for operationSOP1aCont in operationSOP1Cont)
+        opSOP1TargetQubits = (operationSOP1Index+digits,)
+
+        operationSOP2Cont = opSOP1ControlQubits + opSOP1TargetQubits
+        operationSOP2.append(operationSOP2Cont)
+
+    print(operationSOP2,end='\n\n\n')
+
+    #12
+
+    for operationSOP2Cont in operationSOP2:
+        print_exec(f'mCirc.append(MCXGate(num_ctrl_qubits={len(operationSOP2Cont)-1}),
+                   {operationSOP2Cont})')
+        print_exec(f'mCirc.x({operationSOP2Cont[-1]})',end='\n\n')
+
+    mCirc.append(MCXGate(num_ctrl_qubits=1),(12,4))
+    mCirc.x(4)
+
+    mCirc.append(MCXGate(num_ctrl_qubits=2),(13,14,15))
+    mCirc.x(5)
+
+    mCirc.append(MCXGate(num_ctrl_qubit=4),(15,16,17,18,6))
+    mCirc.x(6)
+
+    mCirc.append(MCXGate(num_ctrl_qubits=1),(19,7))
+    mCirc.x(7)
+
+
 
