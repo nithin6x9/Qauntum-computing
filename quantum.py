@@ -106,6 +106,71 @@ for i in range(lendata**digits):
 
     Table
 
+#4
+
+ProductCBinFinalsArr = np.array(ProductCBinFinals)
+ProductCBinColNum = ProductCBinFinalsArr.shape[1]
+
+termsCompr1 = []
+prodinSOPLen = []
+
+qubit = digits*2+ProductCBinColNum
+
+RawTable = []
+
+for i in range(ProductCBinColNum):
+    ProductArr = ProductCBinFinalsArr[:,i]
+    ProductArr1Indices = np.arange(len(ProductArr))[ProductArr == 1]
+
+
+    numsArr = np.array(numsList)
+    ProductArr1Inputs = numsArr[ProductArr1Indices]
+
+    inputNums = ProductArr1Inputs.shape[1]
+
+    ProductRawEq1 = []
+    symbols = [sympy.Symbol('q%s' % QubitIndex)for QubitIndex in range(inputNums)]
+
+    for ProductArr1InputsCont in ProductArr1Inputs:
+        ProductRawEq1 += [[{symbols[inputIndex]:ProductArr1InputsCount[InputIndex] for InputIndex in range(len(ProductArr1InputsCont))}]]
+
+        ProductRawEq2 = np.array(ProductRawEq1)
+        ProductRawEq3 = ProductRawEq2.flatten().tolist()
+
+        SOP = sympy.SOPform(symbols,ProductRawEq2)
+        SOPProducts = SOP.atoms(sympy.And)
+
+        SOP_NAND = bool(1)
+
+        for SOPProduct in SOPProducts:
+            SOP_NAND &= ~SOPProduct
+        
+        SOP_NAND = ~SOP_NAND
+
+        termsList = [tuple(str[SOPProduct].split('&'))for SOPProduct in SOPProducts]
+        termsCompr1.extend(termsList)
+        prodinSOPLen.append(len(termsList))
+
+        RawTable.append([f'q{i+digits}',SOP_NAND])
+    
+    pd.set_option('display.max_col_width',None)
+
+    Table = pd.DataFrame(RawTable,columns = ['Output Qubits','Boolean/Logical Equations'])
+
+    Table = Table.style_properties(**{'text-align':'left'})
+
+    Table = Table.set_table_styles([dict(selector='th',props=[('text-align','center')])])
+
+    #5
+    termsCompr2 = []
+
+    RawTable = []
+
+    for termsCompr1Cont in termsCompr1:
+        if termsCompr1Cont not in termsCompr2:
+            termsCompr2.append(termsCompr1Cont)
+
+            RawTable.append([termsCompr1Cont])
 
 
 
