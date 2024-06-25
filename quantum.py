@@ -107,6 +107,11 @@ for i in range(lendata**digits):
     Table
 
 #4
+w,x,y,z = sympy.symbols('w,x,y,z')
+minterms = [{w:0,x:1},{y:1,z:1,x:1}]
+sympy.SOPform([w,x,y,z],minterms)
+
+#5
 
 ProductCBinFinalsArr = np.array(ProductCBinFinals)
 ProductCBinColNum = ProductCBinFinalsArr.shape[1]
@@ -161,7 +166,8 @@ for i in range(ProductCBinColNum):
 
     Table = Table.set_table_styles([dict(selector='th',props=[('text-align','center')])])
 
-    #5
+    #6
+
     termsCompr2 = []
 
     RawTable = []
@@ -188,7 +194,8 @@ for i in range(ProductCBinColNum):
     '''Table
         Number of qubits:20'''
     
-    #6
+    #7
+
     termsCompr3 = []
     for termsCompr2Index in range(len(termsCompr2)):
         targetQubit = (termsCompr2Index+qubitNumsInitial,)
@@ -208,15 +215,15 @@ for i in range(ProductCBinColNum):
         termsCompr3.append(QubitMCXGCommand+targetQubit)
 
         print(termsCompr3)
-    #7
+    #8
 
     def print_exec(command,sep='',end='\n'):
         print(command,sep=sep,end=end)
         exec(command)
-    #8
+    #9
 
     mCirc = QuantumCircuit(qubitNums,digits)
-
+    #10
     for InputNum in range(digits):
         inverseInputNum = InputNum+digits*2
         print_exec(f'mCirc.cv({InputNum},{inverseInputNum})')
@@ -231,7 +238,7 @@ for i in range(ProductCBinColNum):
     mCirc.cx(3,11)
     mCirc.cx(11)
     
-    #9
+    #11
 
     operationSOP1 = []
     operationSOP1Checkpoint = 0
@@ -246,7 +253,7 @@ for i in range(ProductCBinColNum):
         print(operationSOP1,end='\n\n\n')
         #[1,2,4,1]
 
-    #10
+    #12
 
     for operationSOP1Count in operationSOP1:
         for SOPProduct in operationSOP1Count:
@@ -280,7 +287,7 @@ for i in range(ProductCBinColNum):
     mCirc.append(MCXGate(num_ctrl_qubits=2),(1,2,19))
     mCirc.x(19)
 
-    #11
+    #13
 
     operationSOP2 = []
 
@@ -295,7 +302,7 @@ for i in range(ProductCBinColNum):
 
     print(operationSOP2,end='\n\n\n')
 
-    #12
+    #14
 
     for operationSOP2Cont in operationSOP2:
         print_exec(f'mCirc.append(MCXGate(num_ctrl_qubits={len(operationSOP2Cont)-1}),
@@ -314,10 +321,10 @@ for i in range(ProductCBinColNum):
     mCirc.append(MCXGate(num_ctrl_qubits=1),(19,7))
     mCirc.x(7)
 
-    #13
+    #15
     mCirc.measure(np.arange(digits)+digits,range(digits)[::-1])
 
-    #14
+    #16
     inputDet = sum([circInst.operation.name == 'x' or circInst.operation.name=='id' for circInst in
                     mCirc.data[:digits]])==digits
     if inputDet < digits:
